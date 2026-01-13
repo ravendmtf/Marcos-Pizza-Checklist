@@ -23,14 +23,15 @@
             color: var(--text-primary);
             margin: 0;
             padding: 0;
-            padding-bottom: 80px; /* Space for the footer */
+            padding-bottom: 140px; /* Extra space for footer + buttons */
             -webkit-tap-highlight-color: transparent;
+            font-size: 18px; /* SCALED UP */
         }
 
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 25px; }
 
         header {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 1px solid #333;
             display: flex;
@@ -38,78 +39,100 @@
             align-items: flex-end;
         }
 
-        h1 { font-weight: 600; font-size: 22px; margin: 0; color: var(--accent-color); }
-        .store-id { font-size: 12px; color: var(--text-secondary); }
+        h1 { font-weight: 600; font-size: 26px; margin: 0; color: var(--accent-color); }
+        .store-id { font-size: 14px; color: var(--text-secondary); }
 
         .refresh-btn {
-            background: none; border: 1px solid var(--accent-color); color: var(--accent-color);
-            padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
+            background: none; border: 2px solid var(--accent-color); color: var(--accent-color);
+            padding: 8px 16px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer;
         }
 
         /* Task Card */
         .task-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 15px;
+            border-radius: 16px;
+            padding: 20px; /* Larger touch area */
+            margin-bottom: 18px;
             display: flex;
             align-items: flex-start;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            border-left: 4px solid transparent;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            border-left: 6px solid transparent;
             transition: transform 0.1s;
         }
         .task-card:active { transform: scale(0.98); }
 
-        .checkbox-area { margin-right: 15px; padding-top: 2px; }
+        .checkbox-area { margin-right: 18px; padding-top: 4px; }
         .custom-checkbox {
-            width: 24px; height: 24px;
-            border: 2px solid var(--text-secondary);
-            border-radius: 6px;
+            width: 30px; height: 30px; /* Larger Checkbox */
+            border: 3px solid var(--text-secondary);
+            border-radius: 8px;
         }
 
         .task-content { flex-grow: 1; }
-        .task-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+        .task-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; line-height: 1.3; }
         
-        .task-meta { display: flex; gap: 15px; font-size: 11px; color: var(--text-secondary); }
+        .task-meta { display: flex; gap: 15px; font-size: 13px; color: var(--text-secondary); }
         .meta-item { display: flex; align-items: center; }
-        .meta-label { opacity: 0.6; margin-right: 4px; }
+        .meta-label { opacity: 0.6; margin-right: 5px; }
 
         .completed-by {
-            font-size: 11px; color: var(--text-secondary); margin-top: 6px; font-style: italic;
+            font-size: 13px; color: var(--text-secondary); margin-top: 8px; font-style: italic;
         }
 
         /* Done State */
-        .task-card.done { opacity: 0.6; border-left: 4px solid var(--accent-color); }
+        .task-card.done { opacity: 0.5; border-left: 6px solid var(--accent-color); }
         .task-card.done .custom-checkbox {
             background-color: var(--accent-color); border-color: var(--accent-color);
-            box-shadow: 0 0 10px var(--accent-glow);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
         .task-card.done .custom-checkbox::after {
-            content: '✓'; color: white; font-size: 14px; font-weight: bold;
+            content: '✓'; color: white; font-size: 18px; font-weight: bold;
             display: flex; justify-content: center; align-items: center; height: 100%;
         }
         .task-card.done .task-title { text-decoration: line-through; color: var(--text-secondary); }
         .task-card.done .completed-by { color: var(--accent-color); font-style: normal; font-weight: 500; }
 
-        /* FIXED FOOTER for Name Input */
+        /* FIXED FOOTER */
         .footer-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #252525; border-top: 1px solid #333;
-            padding: 15px; box-sizing: border-box;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
-            display: flex; justify-content: center; z-index: 100;
+            background: #222; border-top: 1px solid #333;
+            padding: 20px; box-sizing: border-box;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.6);
+            display: flex; flex-direction: column; gap: 10px; z-index: 100;
         }
         
         .name-input {
-            width: 100%; max-width: 500px;
-            padding: 12px; border-radius: 8px; border: 1px solid #444;
-            background: #121212; color: white; font-size: 16px;
-            font-family: 'Poppins', sans-serif; outline: none;
+            width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #555;
+            background: #121212; color: white; font-size: 18px; /* Larger Input */
+            font-family: 'Poppins', sans-serif; outline: none; box-sizing: border-box;
         }
-        .name-input:focus { border-color: var(--accent-color); }
-        .name-input::placeholder { color: #666; }
+        
+        .suggest-link {
+            text-align: center; font-size: 14px; color: #666; 
+            text-decoration: underline; cursor: pointer; margin-top: 5px;
+        }
 
-        #loader { text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 14px; }
+        /* MODAL (Popup) */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: #252525; padding: 25px; border-radius: 16px; width: 85%; max-width: 400px;
+            border: 1px solid #444;
+        }
+        .modal-title { font-size: 20px; margin-bottom: 15px; color: white; font-weight: 600; }
+        textarea {
+            width: 100%; height: 100px; background: #121212; border: 1px solid #444;
+            color: white; padding: 10px; font-family: inherit; font-size: 16px; border-radius: 8px;
+            box-sizing: border-box; resize: none;
+        }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-size: 16px; cursor: pointer; font-weight: 500; }
+        .btn-cancel { background: #333; color: #aaa; }
+        .btn-submit { background: var(--accent-color); color: white; }
+
+        #loader { text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -117,31 +140,41 @@
     <div class="container">
         <header>
             <div>
-                <h1>Marco's Pizza <span style="color: white; font-size: 0.8em;">#8022</span></h1>
+                <h1>Marco's <span style="color: white; font-size: 0.8em;">#8022</span></h1>
                 <div class="store-id">Team Checklist</div>
             </div>
             <button class="refresh-btn" onclick="loadTasks()">Refresh</button>
         </header>
 
-        <div id="loader">Syncing with HQ...</div>
+        <div id="loader">Syncing...</div>
         <div id="list"></div>
     </div>
 
     <div class="footer-bar">
-        <input type="text" id="employeeName" class="name-input" placeholder="Enter your name here..." autocomplete="off">
+        <input type="text" id="employeeName" class="name-input" placeholder="Type Your Name (Required)" autocomplete="off">
+        <div class="suggest-link" onclick="openModal()">Have a suggestion? Click here.</div>
+    </div>
+
+    <div id="suggestModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-title">Suggest a Task</div>
+            <textarea id="suggestText" placeholder="e.g. Organize the dry storage shelf..."></textarea>
+            <div class="modal-btns">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-submit" onclick="submitSuggestion()">Send</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // *** YOUR GOOGLE SCRIPT URL ***
+        // *** PASTE YOUR DEPLOYMENT URL HERE ***
         const API_URL = "https://script.google.com/macros/s/AKfycbzEYl4RaRIiG1gR163HU-XYyEYSoibL1DPqirtVB7i8fTmbihJkZ8zuiSIF46R0cMF9rA/exec";
 
-        // 1. Load saved name on startup
         const nameInput = document.getElementById('employeeName');
         if (localStorage.getItem('pizzaName')) {
             nameInput.value = localStorage.getItem('pizzaName');
         }
 
-        // 2. Save name whenever they type
         nameInput.addEventListener('input', (e) => {
             localStorage.setItem('pizzaName', e.target.value);
         });
@@ -154,7 +187,8 @@
 
             try {
                 const response = await fetch(API_URL + "?t=" + Date.now());
-                const tasks = await response.json();
+                const data = await response.json();
+                const tasks = data.tasks; // New format: response is { tasks: [], suggestions: [] }
                 
                 loader.style.display = "none";
                 list.innerHTML = "";
@@ -197,24 +231,18 @@
             const nameField = card.querySelector(".completed-by");
             const userName = nameInput.value.trim();
 
-            // 1. Validation: Name must be entered
             if (!userName) {
                 alert("Please enter your name at the bottom first!");
                 nameInput.focus();
-                // Add a red shake effect to input
-                nameInput.style.borderColor = "#e74c3c";
-                setTimeout(() => nameInput.style.borderColor = "#444", 500);
                 return;
             }
 
-            // 2. Confirmation Dialogs
             if (!isCurrentlyDone) {
                 if(!confirm(`Mark "${taskName}" as DONE by ${userName}?`)) return;
             } else {
                 if(!confirm(`UNCHECK "${taskName}"?`)) return;
             }
 
-            // 3. Update Logic
             const newState = !isCurrentlyDone;
             card.dataset.done = newState;
             
@@ -229,7 +257,6 @@
                 }
             }
 
-            // 4. Send to Google Sheet
             fetch(API_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -237,9 +264,40 @@
                 body: JSON.stringify({ 
                     row: row, 
                     status: newState ? "TRUE" : "FALSE",
-                    name: userName // Sends the name from the input box
+                    name: userName
                 })
             });
+        }
+
+        // --- SUGGESTION LOGIC ---
+        function openModal() { 
+            if(!nameInput.value.trim()) { alert("Please enter your name first."); return; }
+            document.getElementById('suggestModal').style.display = 'flex'; 
+        }
+        function closeModal() { document.getElementById('suggestModal').style.display = 'none'; }
+        
+        async function submitSuggestion() {
+            const txt = document.getElementById('suggestText').value;
+            const user = nameInput.value;
+            if(!txt) return;
+
+            document.querySelector('.btn-submit').innerText = "Sending...";
+            
+            await fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({ 
+                    action: "suggest",
+                    task: txt,
+                    name: user
+                })
+            });
+
+            document.getElementById('suggestText').value = "";
+            document.querySelector('.btn-submit').innerText = "Send";
+            closeModal();
+            alert("Suggestion sent to Manager!");
         }
 
         loadTasks();
