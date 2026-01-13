@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shift Checklist</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card.done { opacity: 0.5; background: #e0e0e0; }
+        input[type=checkbox] { transform: scale(1.5); margin-right: 15px; }
+        span { font-size: 18px; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <h2>Weekly Tasks</h2>
+    <div id="list">Loading...</div>
+
+    <script>
+        // PASTE YOUR GOOGLE APPS SCRIPT URL HERE
+        const API_URL = "https://script.google.com/macros/s/AKfycbz282lZnyAXfe0CGoq5IelSl3JPDEPZTYavb4Q2DsuvMYlSv23LNWK348I3tgybe3wJvA/exec";
+
+        async function loadTasks() {
+            const response = await fetch(API_URL);
+            const tasks = await response.json();
+            const list = document.getElementById("list");
+            list.innerHTML = "";
+
+            tasks.forEach(t => {
+                let div = document.createElement("div");
+                div.className = "card " + (t.status === "TRUE" ? "done" : "");
+                div.innerHTML = `
+                    <input type="checkbox" ${t.status === "TRUE" ? "checked" : ""} 
+                     onchange="updateTask(${t.row}, this.checked)">
+                    <span>${t.task}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function updateTask(row, isChecked) {
+            // Visual update immediately so it feels fast
+            event.target.parentElement.className = "card " + (isChecked ? "done" : "");
+            
+            // Send to Google Sheet
+            fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors", // Essential for Google Apps Script
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify({ row: row, status: isChecked ? "TRUE" : "FALSE" })
+            });
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>
