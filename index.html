@@ -4,21 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Marco's #8022 Ops</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Dark Mode Palette */
             --bg-color: #121212;
             --card-bg: #1e1e1e;
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0a0;
-            --accent-color: #9b59b6; /* Purple */
+            --accent-color: #9b59b6;
             --accent-glow: rgba(155, 89, 182, 0.3);
-            --danger: #e74c3c;
         }
 
         body {
@@ -30,14 +25,8 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-        }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        /* Header */
         header {
             margin-bottom: 30px;
             padding-bottom: 15px;
@@ -47,37 +36,14 @@
             align-items: flex-end;
         }
 
-        h1 {
-            font-weight: 600;
-            font-size: 22px;
-            margin: 0;
-            color: var(--accent-color);
-            letter-spacing: 0.5px;
-        }
-
-        .store-id {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
+        h1 { font-weight: 600; font-size: 22px; margin: 0; color: var(--accent-color); }
+        .store-id { font-size: 12px; color: var(--text-secondary); }
 
         .refresh-btn {
-            background: none;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .refresh-btn:active {
-            background: var(--accent-color);
-            color: white;
+            background: none; border: 1px solid var(--accent-color); color: var(--accent-color);
+            padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
         }
 
-        /* Task Card */
         .task-card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -90,95 +56,47 @@
             transition: transform 0.2s;
         }
 
-        .task-card:active {
-            transform: scale(0.98);
-        }
+        .task-card:active { transform: scale(0.98); }
 
-        /* The Checkbox Area */
-        .checkbox-area {
-            margin-right: 15px;
-            padding-top: 2px;
-        }
-
+        .checkbox-area { margin-right: 15px; padding-top: 2px; }
         .custom-checkbox {
-            width: 24px;
-            height: 24px;
+            width: 24px; height: 24px;
             border: 2px solid var(--text-secondary);
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
         }
 
-        /* Task Details */
-        .task-content {
-            flex-grow: 1;
-        }
-
-        .task-title {
-            font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-        }
+        .task-content { flex-grow: 1; }
+        .task-title { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
         
-        .meta-label {
-            opacity: 0.6;
-            margin-right: 4px;
-        }
+        .task-meta { display: flex; gap: 15px; font-size: 11px; color: var(--text-secondary); }
+        .meta-item { display: flex; align-items: center; }
+        .meta-label { opacity: 0.6; margin-right: 4px; }
 
+        /* The Name Field - Always visible now */
         .completed-by {
             font-size: 11px;
-            color: var(--accent-color);
-            margin-top: 4px;
-            font-weight: 500;
-            display: none;
+            color: var(--text-secondary); /* Grey by default */
+            margin-top: 6px;
+            font-style: italic;
+            min-height: 16px; /* Prevent jumpiness */
         }
 
         /* Done State */
-        .task-card.done {
-            opacity: 0.6;
-            border-left: 4px solid var(--accent-color);
-        }
-
+        .task-card.done { opacity: 0.6; border-left: 4px solid var(--accent-color); }
         .task-card.done .custom-checkbox {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
+            background-color: var(--accent-color); border-color: var(--accent-color);
             box-shadow: 0 0 10px var(--accent-glow);
         }
-
         .task-card.done .custom-checkbox::after {
-            content: '✓';
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
+            content: '✓'; color: white; font-size: 14px; font-weight: bold;
+            display: flex; justify-content: center; align-items: center; height: 100%;
         }
-
-        .task-card.done .task-title {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
-
-        .task-card.done .completed-by {
-            display: block;
-        }
-
-        /* Loaders/Messages */
-        #loader { text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 14px; }
+        .task-card.done .task-title { text-decoration: line-through; color: var(--text-secondary); }
         
+        /* When done, name turns Purple */
+        .task-card.done .completed-by { color: var(--accent-color); font-style: normal; font-weight: 500; }
+
+        #loader { text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -197,18 +115,16 @@
     </div>
 
     <script>
-        // YOUR SPECIFIC DEPLOYMENT LINK
+        // *** PASTE YOUR DEPLOYMENT URL HERE ***
         const API_URL = "https://script.google.com/macros/s/AKfycbzEYl4RaRIiG1gR163HU-XYyEYSoibL1DPqirtVB7i8fTmbihJkZ8zuiSIF46R0cMF9rA/exec";
 
         async function loadTasks() {
             const list = document.getElementById("list");
             const loader = document.getElementById("loader");
             
-            // Only show loader on initial empty state
             if(list.children.length === 0) loader.style.display = "block";
 
             try {
-                // Add timestamp to prevent caching
                 const response = await fetch(API_URL + "?t=" + Date.now());
                 const tasks = await response.json();
                 
@@ -222,8 +138,10 @@
                     div.className = "task-card " + (isDone ? "done" : "");
                     div.dataset.row = t.row;
                     div.dataset.done = isDone;
+                    
+                    // Store the current "Completed By" text so we can restore it
+                    div.dataset.history = t.completedBy || "";
 
-                    // HTML Structure
                     div.innerHTML = `
                         <div class="checkbox-area">
                             <div class="custom-checkbox"></div>
@@ -231,18 +149,15 @@
                         <div class="task-content">
                             <div class="task-title">${t.task}</div>
                             <div class="task-meta">
-                                <div class="meta-item">
-                                    <span class="meta-label">Added:</span> ${t.dateAdded || '-'}
-                                </div>
-                                <div class="meta-item" style="color: #e74c3c;">
-                                    <span class="meta-label">Due:</span> ${t.deadline || '-'}
-                                </div>
+                                <div class="meta-item"><span class="meta-label">Added:</span> ${t.dateAdded || '-'}</div>
+                                <div class="meta-item" style="color: #e74c3c;"><span class="meta-label">Due:</span> ${t.deadline || '-'}</div>
                             </div>
-                            <div class="completed-by">✔ Done by: ${t.completedBy}</div>
+                            <div class="completed-by">
+                                ${t.completedBy ? (isDone ? "✔ Done by: " + t.completedBy : "Last: " + t.completedBy) : ""}
+                            </div>
                         </div>
                     `;
 
-                    // Click Handler
                     div.addEventListener("click", () => handleTaskClick(div, t.row, t.task));
                     list.appendChild(div);
                 });
@@ -255,27 +170,35 @@
 
         function handleTaskClick(card, row, taskName) {
             const isCurrentlyDone = card.dataset.done === "true";
+            const nameField = card.querySelector(".completed-by");
             let name = "";
 
             if (!isCurrentlyDone) {
-                // If checking OFF, ask for name
+                // Checking the box
                 name = prompt(`Completing: "${taskName}"\nEnter your name:`);
-                if (!name) return; // Cancel if no name entered
+                if (!name) return;
             } else {
-                // If unchecking, confirm they want to undo
+                // Unchecking the box
                 if(!confirm("Uncheck this task?")) return;
-                name = ""; // Clear name
+                name = ""; 
             }
 
-            // Optimistic UI Update (Update screen before server replies)
+            // Optimistic UI Update
             const newState = !isCurrentlyDone;
             card.dataset.done = newState;
             
             if(newState) {
                 card.classList.add("done");
-                card.querySelector(".completed-by").innerText = "✔ Done by: " + name;
+                // If there was history, append loosely for visual feedback (Real data comes from server on refresh)
+                const history = card.dataset.history;
+                nameField.innerText = "✔ Done by: " + name + (history ? "..." : ""); 
             } else {
                 card.classList.remove("done");
+                // When unchecking, don't hide the name! Show it as "Last:"
+                // We keep the old text visually until refresh
+                if (card.dataset.history) {
+                    nameField.innerText = "Last: " + card.dataset.history;
+                }
             }
 
             // Send to Google Sheet
