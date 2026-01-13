@@ -3,32 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Team Checklist</title>
+    <title>Marco's #8022 Ops</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #2c3e50; /* Dark Slate */
-            --accent: #e74c3c;  /* Pizza Red */
-            --bg: #f4f6f8;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --text-light: #8898aa;
+            /* Dark Mode Palette */
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-color: #9b59b6; /* Purple */
+            --accent-glow: rgba(155, 89, 182, 0.3);
+            --danger: #e74c3c;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Container for Desktop/Mobile Centering */
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -36,132 +37,148 @@
             min-height: 100vh;
         }
 
-        /* Header Styling */
+        /* Header */
         header {
             margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
         }
 
         h1 {
             font-weight: 600;
-            font-size: 24px;
+            font-size: 22px;
             margin: 0;
-            color: var(--primary);
+            color: var(--accent-color);
+            letter-spacing: 0.5px;
         }
 
-        .subtitle {
-            font-size: 14px;
-            color: var(--text-light);
-            margin-top: 4px;
+        .store-id {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
-        /* Loading State */
-        #loader {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-light);
-            font-weight: 500;
+        .refresh-btn {
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .refresh-btn:active {
+            background: var(--accent-color);
+            color: white;
         }
 
-        /* Task Card Styling */
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
+        /* Task Card */
         .task-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
             display: flex;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            border: 1px solid transparent;
+            align-items: flex-start;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-left: 4px solid transparent;
+            transition: transform 0.2s;
         }
 
         .task-card:active {
             transform: scale(0.98);
         }
 
-        /* Custom Checkbox Design */
-        .checkbox-wrapper {
-            position: relative;
-            width: 28px;
-            height: 28px;
-            margin-right: 16px;
-            flex-shrink: 0;
+        /* The Checkbox Area */
+        .checkbox-area {
+            margin-right: 15px;
+            padding-top: 2px;
         }
 
         .custom-checkbox {
-            width: 100%;
-            height: 100%;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
         }
 
-        .task-text {
+        /* Task Details */
+        .task-content {
+            flex-grow: 1;
+        }
+
+        .task-title {
             font-size: 16px;
             font-weight: 500;
+            margin-bottom: 6px;
             line-height: 1.4;
-            flex-grow: 1;
-            transition: color 0.2s;
         }
 
-        /* Completed State Styles */
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .meta-label {
+            opacity: 0.6;
+            margin-right: 4px;
+        }
+
+        .completed-by {
+            font-size: 11px;
+            color: var(--accent-color);
+            margin-top: 4px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Done State */
         .task-card.done {
-            background-color: #fafafa;
-            box-shadow: none;
-            border-color: #eee;
+            opacity: 0.6;
+            border-left: 4px solid var(--accent-color);
         }
 
         .task-card.done .custom-checkbox {
-            background-color: var(--accent);
-            border-color: var(--accent);
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .task-card.done .custom-checkbox::after {
             content: '✓';
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
         }
 
-        .task-card.done .task-text {
-            color: #b0b0b0;
+        .task-card.done .task-title {
             text-decoration: line-through;
+            color: var(--text-secondary);
         }
 
-        /* Refresh Button */
-        .refresh-btn {
-            background: none;
-            border: none;
-            color: var(--accent);
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
+        .task-card.done .completed-by {
+            display: block;
         }
+
+        /* Loaders/Messages */
+        #loader { text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 14px; }
         
-        /* Tag styling for categories if you add them later */
-        .tag {
-            font-size: 11px;
-            background: #eee;
-            padding: 2px 8px;
-            border-radius: 4px;
-            color: #666;
-            margin-left: 8px;
-        }
-
     </style>
 </head>
 <body>
@@ -169,91 +186,111 @@
     <div class="container">
         <header>
             <div>
-                <h1>To-Do List</h1>
-                <div class="subtitle" id="date-display">Today</div>
+                <h1>Marco's Pizza <span style="color: white; font-size: 0.8em;">#8022</span></h1>
+                <div class="store-id">Team Checklist</div>
             </div>
             <button class="refresh-btn" onclick="loadTasks()">Refresh</button>
         </header>
 
-        <div id="loader">Loading tasks...</div>
-        <div id="list" class="task-list"></div>
+        <div id="loader">Syncing with HQ...</div>
+        <div id="list"></div>
     </div>
 
     <script>
-        // YOUR SPECIFIC URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbzGMPjvyPIby5s9HkrPAppU4EVAmA3hbFS-Dajru1rva8ieE0TpzmtF4jYvMiwya04rhg/exec";
-
-        // Set today's date in header
-        const options = { weekday: 'long', month: 'short', day: 'numeric' };
-        document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', options);
+        // YOUR SPECIFIC DEPLOYMENT LINK
+        const API_URL = "https://script.google.com/macros/s/AKfycbzEYl4RaRIiG1gR163HU-XYyEYSoibL1DPqirtVB7i8fTmbihJkZ8zuiSIF46R0cMF9rA/exec";
 
         async function loadTasks() {
-            const listContainer = document.getElementById("list");
+            const list = document.getElementById("list");
             const loader = document.getElementById("loader");
             
-            // Show loader if list is empty
-            if(listContainer.children.length === 0) {
-                loader.style.display = "block";
-            }
+            // Only show loader on initial empty state
+            if(list.children.length === 0) loader.style.display = "block";
 
             try {
-                // Add random param to prevent caching
-                const response = await fetch(API_URL + "?t=" + new Date().getTime());
+                // Add timestamp to prevent caching
+                const response = await fetch(API_URL + "?t=" + Date.now());
                 const tasks = await response.json();
                 
                 loader.style.display = "none";
-                listContainer.innerHTML = "";
+                list.innerHTML = "";
 
                 tasks.forEach(t => {
                     const isDone = t.status === true || t.status === "TRUE";
                     
-                    let div = document.createElement("div");
+                    const div = document.createElement("div");
                     div.className = "task-card " + (isDone ? "done" : "");
-                    // We store the row number in a data attribute
                     div.dataset.row = t.row;
-                    
+                    div.dataset.done = isDone;
+
+                    // HTML Structure
                     div.innerHTML = `
-                        <div class="checkbox-wrapper">
+                        <div class="checkbox-area">
                             <div class="custom-checkbox"></div>
                         </div>
-                        <span class="task-text">${t.task}</span>
+                        <div class="task-content">
+                            <div class="task-title">${t.task}</div>
+                            <div class="task-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Added:</span> ${t.dateAdded || '-'}
+                                </div>
+                                <div class="meta-item" style="color: #e74c3c;">
+                                    <span class="meta-label">Due:</span> ${t.deadline || '-'}
+                                </div>
+                            </div>
+                            <div class="completed-by">✔ Done by: ${t.completedBy}</div>
+                        </div>
                     `;
-                    
-                    // Add click event to the whole card for easier mobile tapping
-                    div.addEventListener('click', () => toggleTask(div, t.row));
-                    
-                    listContainer.appendChild(div);
+
+                    // Click Handler
+                    div.addEventListener("click", () => handleTaskClick(div, t.row, t.task));
+                    list.appendChild(div);
                 });
 
             } catch (error) {
-                console.error("Error:", error);
-                loader.innerText = "Error loading tasks. Try refreshing.";
+                console.error(error);
+                loader.innerText = "Error loading. Pull down to refresh.";
             }
         }
 
-        function toggleTask(element, row) {
-            // 1. Visual Update Immediately (Optimistic UI)
-            const isNowDone = !element.classList.contains("done");
-            
-            if (isNowDone) {
-                element.classList.add("done");
+        function handleTaskClick(card, row, taskName) {
+            const isCurrentlyDone = card.dataset.done === "true";
+            let name = "";
+
+            if (!isCurrentlyDone) {
+                // If checking OFF, ask for name
+                name = prompt(`Completing: "${taskName}"\nEnter your name:`);
+                if (!name) return; // Cancel if no name entered
             } else {
-                element.classList.remove("done");
+                // If unchecking, confirm they want to undo
+                if(!confirm("Uncheck this task?")) return;
+                name = ""; // Clear name
             }
 
-            // 2. Send to Google Sheets Background
+            // Optimistic UI Update (Update screen before server replies)
+            const newState = !isCurrentlyDone;
+            card.dataset.done = newState;
+            
+            if(newState) {
+                card.classList.add("done");
+                card.querySelector(".completed-by").innerText = "✔ Done by: " + name;
+            } else {
+                card.classList.remove("done");
+            }
+
+            // Send to Google Sheet
             fetch(API_URL, {
                 method: "POST",
-                mode: "no-cors", 
+                mode: "no-cors",
                 headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify({ 
                     row: row, 
-                    status: isNowDone ? "TRUE" : "FALSE" 
+                    status: newState ? "TRUE" : "FALSE",
+                    name: name
                 })
-            }).catch(err => console.error("Sync error:", err));
+            });
         }
 
-        // Initial Load
         loadTasks();
     </script>
 </body>
