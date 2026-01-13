@@ -14,6 +14,7 @@
             --text-secondary: #a0a0a0;
             --accent-color: #9b59b6;
             --accent-glow: rgba(155, 89, 182, 0.3);
+            --danger: #e74c3c;
         }
 
         body {
@@ -22,13 +23,14 @@
             color: var(--text-primary);
             margin: 0;
             padding: 0;
+            padding-bottom: 80px; /* Space for the footer */
             -webkit-tap-highlight-color: transparent;
         }
 
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
         header {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #333;
             display: flex;
@@ -44,6 +46,7 @@
             padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer;
         }
 
+        /* Task Card */
         .task-card {
             background: var(--card-bg);
             border-radius: 12px;
@@ -53,9 +56,8 @@
             align-items: flex-start;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             border-left: 4px solid transparent;
-            transition: transform 0.2s;
+            transition: transform 0.1s;
         }
-
         .task-card:active { transform: scale(0.98); }
 
         .checkbox-area { margin-right: 15px; padding-top: 2px; }
@@ -72,13 +74,8 @@
         .meta-item { display: flex; align-items: center; }
         .meta-label { opacity: 0.6; margin-right: 4px; }
 
-        /* The Name Field - Always visible now */
         .completed-by {
-            font-size: 11px;
-            color: var(--text-secondary); /* Grey by default */
-            margin-top: 6px;
-            font-style: italic;
-            min-height: 16px; /* Prevent jumpiness */
+            font-size: 11px; color: var(--text-secondary); margin-top: 6px; font-style: italic;
         }
 
         /* Done State */
@@ -92,9 +89,25 @@
             display: flex; justify-content: center; align-items: center; height: 100%;
         }
         .task-card.done .task-title { text-decoration: line-through; color: var(--text-secondary); }
-        
-        /* When done, name turns Purple */
         .task-card.done .completed-by { color: var(--accent-color); font-style: normal; font-weight: 500; }
+
+        /* FIXED FOOTER for Name Input */
+        .footer-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #252525; border-top: 1px solid #333;
+            padding: 15px; box-sizing: border-box;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
+            display: flex; justify-content: center; z-index: 100;
+        }
+        
+        .name-input {
+            width: 100%; max-width: 500px;
+            padding: 12px; border-radius: 8px; border: 1px solid #444;
+            background: #121212; color: white; font-size: 16px;
+            font-family: 'Poppins', sans-serif; outline: none;
+        }
+        .name-input:focus { border-color: var(--accent-color); }
+        .name-input::placeholder { color: #666; }
 
         #loader { text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 14px; }
     </style>
@@ -114,9 +127,24 @@
         <div id="list"></div>
     </div>
 
+    <div class="footer-bar">
+        <input type="text" id="employeeName" class="name-input" placeholder="Enter your name here..." autocomplete="off">
+    </div>
+
     <script>
-        // *** PASTE YOUR DEPLOYMENT URL HERE ***
+        // *** YOUR GOOGLE SCRIPT URL ***
         const API_URL = "https://script.google.com/macros/s/AKfycbzEYl4RaRIiG1gR163HU-XYyEYSoibL1DPqirtVB7i8fTmbihJkZ8zuiSIF46R0cMF9rA/exec";
+
+        // 1. Load saved name on startup
+        const nameInput = document.getElementById('employeeName');
+        if (localStorage.getItem('pizzaName')) {
+            nameInput.value = localStorage.getItem('pizzaName');
+        }
+
+        // 2. Save name whenever they type
+        nameInput.addEventListener('input', (e) => {
+            localStorage.setItem('pizzaName', e.target.value);
+        });
 
         async function loadTasks() {
             const list = document.getElementById("list");
@@ -138,14 +166,10 @@
                     div.className = "task-card " + (isDone ? "done" : "");
                     div.dataset.row = t.row;
                     div.dataset.done = isDone;
-                    
-                    // Store the current "Completed By" text so we can restore it
                     div.dataset.history = t.completedBy || "";
 
                     div.innerHTML = `
-                        <div class="checkbox-area">
-                            <div class="custom-checkbox"></div>
-                        </div>
+                        <div class="checkbox-area"><div class="custom-checkbox"></div></div>
                         <div class="task-content">
                             <div class="task-title">${t.task}</div>
                             <div class="task-meta">
@@ -171,37 +195,41 @@
         function handleTaskClick(card, row, taskName) {
             const isCurrentlyDone = card.dataset.done === "true";
             const nameField = card.querySelector(".completed-by");
-            let name = "";
+            const userName = nameInput.value.trim();
 
-            if (!isCurrentlyDone) {
-                // Checking the box
-                name = prompt(`Completing: "${taskName}"\nEnter your name:`);
-                if (!name) return;
-            } else {
-                // Unchecking the box
-                if(!confirm("Uncheck this task?")) return;
-                name = ""; 
+            // 1. Validation: Name must be entered
+            if (!userName) {
+                alert("Please enter your name at the bottom first!");
+                nameInput.focus();
+                // Add a red shake effect to input
+                nameInput.style.borderColor = "#e74c3c";
+                setTimeout(() => nameInput.style.borderColor = "#444", 500);
+                return;
             }
 
-            // Optimistic UI Update
+            // 2. Confirmation Dialogs
+            if (!isCurrentlyDone) {
+                if(!confirm(`Mark "${taskName}" as DONE by ${userName}?`)) return;
+            } else {
+                if(!confirm(`UNCHECK "${taskName}"?`)) return;
+            }
+
+            // 3. Update Logic
             const newState = !isCurrentlyDone;
             card.dataset.done = newState;
             
             if(newState) {
                 card.classList.add("done");
-                // If there was history, append loosely for visual feedback (Real data comes from server on refresh)
                 const history = card.dataset.history;
-                nameField.innerText = "✔ Done by: " + name + (history ? "..." : ""); 
+                nameField.innerText = "✔ Done by: " + userName + (history ? "..." : ""); 
             } else {
                 card.classList.remove("done");
-                // When unchecking, don't hide the name! Show it as "Last:"
-                // We keep the old text visually until refresh
                 if (card.dataset.history) {
                     nameField.innerText = "Last: " + card.dataset.history;
                 }
             }
 
-            // Send to Google Sheet
+            // 4. Send to Google Sheet
             fetch(API_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -209,7 +237,7 @@
                 body: JSON.stringify({ 
                     row: row, 
                     status: newState ? "TRUE" : "FALSE",
-                    name: name
+                    name: userName // Sends the name from the input box
                 })
             });
         }
