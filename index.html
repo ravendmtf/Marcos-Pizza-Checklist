@@ -1,56 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Shift Checklist</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Team Checklist</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
-        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .card.done { opacity: 0.5; background: #e0e0e0; }
-        input[type=checkbox] { transform: scale(1.5); margin-right: 15px; }
-        span { font-size: 18px; width: 100%; }
+        :root {
+            --primary: #2c3e50; /* Dark Slate */
+            --accent: #e74c3c;  /* Pizza Red */
+            --bg: #f4f6f8;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #8898aa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Container for Desktop/Mobile Centering */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header Styling */
+        header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 24px;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Loading State */
+        #loader {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Task Card Styling */
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .task-card:active {
+            transform: scale(0.98);
+        }
+
+        /* Custom Checkbox Design */
+        .checkbox-wrapper {
+            position: relative;
+            width: 28px;
+            height: 28px;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-text {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+            flex-grow: 1;
+            transition: color 0.2s;
+        }
+
+        /* Completed State Styles */
+        .task-card.done {
+            background-color: #fafafa;
+            box-shadow: none;
+            border-color: #eee;
+        }
+
+        .task-card.done .custom-checkbox {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .task-card.done .custom-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .task-card.done .task-text {
+            color: #b0b0b0;
+            text-decoration: line-through;
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Tag styling for categories if you add them later */
+        .tag {
+            font-size: 11px;
+            background: #eee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #666;
+            margin-left: 8px;
+        }
+
     </style>
 </head>
 <body>
 
-    <h2>Weekly Tasks</h2>
-    <div id="list">Loading...</div>
+    <div class="container">
+        <header>
+            <div>
+                <h1>To-Do List</h1>
+                <div class="subtitle" id="date-display">Today</div>
+            </div>
+            <button class="refresh-btn" onclick="loadTasks()">Refresh</button>
+        </header>
+
+        <div id="loader">Loading tasks...</div>
+        <div id="list" class="task-list"></div>
+    </div>
 
     <script>
-        // PASTE YOUR GOOGLE APPS SCRIPT URL HERE
-        const API_URL = "https://script.google.com/macros/s/AKfycbz282lZnyAXfe0CGoq5IelSl3JPDEPZTYavb4Q2DsuvMYlSv23LNWK348I3tgybe3wJvA/exec";
+        // YOUR SPECIFIC URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbzGMPjvyPIby5s9HkrPAppU4EVAmA3hbFS-Dajru1rva8ieE0TpzmtF4jYvMiwya04rhg/exec";
+
+        // Set today's date in header
+        const options = { weekday: 'long', month: 'short', day: 'numeric' };
+        document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', options);
 
         async function loadTasks() {
-            const response = await fetch(API_URL);
-            const tasks = await response.json();
-            const list = document.getElementById("list");
-            list.innerHTML = "";
+            const listContainer = document.getElementById("list");
+            const loader = document.getElementById("loader");
+            
+            // Show loader if list is empty
+            if(listContainer.children.length === 0) {
+                loader.style.display = "block";
+            }
 
-            tasks.forEach(t => {
-                let div = document.createElement("div");
-                div.className = "card " + (t.status === "TRUE" ? "done" : "");
-                div.innerHTML = `
-                    <input type="checkbox" ${t.status === "TRUE" ? "checked" : ""} 
-                     onchange="updateTask(${t.row}, this.checked)">
-                    <span>${t.task}</span>
-                `;
-                list.appendChild(div);
-            });
+            try {
+                // Add random param to prevent caching
+                const response = await fetch(API_URL + "?t=" + new Date().getTime());
+                const tasks = await response.json();
+                
+                loader.style.display = "none";
+                listContainer.innerHTML = "";
+
+                tasks.forEach(t => {
+                    const isDone = t.status === true || t.status === "TRUE";
+                    
+                    let div = document.createElement("div");
+                    div.className = "task-card " + (isDone ? "done" : "");
+                    // We store the row number in a data attribute
+                    div.dataset.row = t.row;
+                    
+                    div.innerHTML = `
+                        <div class="checkbox-wrapper">
+                            <div class="custom-checkbox"></div>
+                        </div>
+                        <span class="task-text">${t.task}</span>
+                    `;
+                    
+                    // Add click event to the whole card for easier mobile tapping
+                    div.addEventListener('click', () => toggleTask(div, t.row));
+                    
+                    listContainer.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error("Error:", error);
+                loader.innerText = "Error loading tasks. Try refreshing.";
+            }
         }
 
-        function updateTask(row, isChecked) {
-            // Visual update immediately so it feels fast
-            event.target.parentElement.className = "card " + (isChecked ? "done" : "");
+        function toggleTask(element, row) {
+            // 1. Visual Update Immediately (Optimistic UI)
+            const isNowDone = !element.classList.contains("done");
             
-            // Send to Google Sheet
+            if (isNowDone) {
+                element.classList.add("done");
+            } else {
+                element.classList.remove("done");
+            }
+
+            // 2. Send to Google Sheets Background
             fetch(API_URL, {
                 method: "POST",
-                mode: "no-cors", // Essential for Google Apps Script
+                mode: "no-cors", 
                 headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify({ row: row, status: isChecked ? "TRUE" : "FALSE" })
-            });
+                body: JSON.stringify({ 
+                    row: row, 
+                    status: isNowDone ? "TRUE" : "FALSE" 
+                })
+            }).catch(err => console.error("Sync error:", err));
         }
 
+        // Initial Load
         loadTasks();
     </script>
 </body>
